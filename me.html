@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Me Stefanny</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    body{
+      font-family:'Cormorant Garamond', serif;
+      background:
+      radial-gradient(circle at top, #07012a 0%, #013d42 40%, #000000 100%);
+      overflow:hidden;
+      height:100vh;
+      color:rgb(255, 255, 255);
+    }
+
+    /* BACKGROUND EFFECT */
+    .bg-noise{
+      position:fixed;
+      inset:0;
+      opacity:0.04;
+      background-image:url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+      z-index:0;
+    }
+
+    .particles{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      z-index:1;
+      pointer-events:none;
+    }
+
+    .particle{
+      position:absolute;
+      width:2px;
+      height:2px;
+      border-radius:50%;
+      background:rgb(98, 206, 239);
+      opacity:0.3;
+      animation:float linear infinite;
+    }
+
+    @keyframes float{
+      from{
+        transform:translateY(100vh);
+      }
+      to{
+        transform:translateY(-100px);
+      }
+    }
+
+    /* PAGE */
+    .page{
+      position:relative;
+      z-index:2;
+      width:100%;
+      height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      padding:20px;
+      transition:1s ease;
+    }
+
+    /* INTRO */
+    .intro-title{
+      font-family:'Playfair Display', serif;
+      font-size:clamp(3rem, 9vw, 8rem);
+      font-weight:700;
+      letter-spacing:5px;
+      color:white;
+      opacity:0;
+      transform:translateY(40px);
+      transition:1s ease;
+      text-align:center;
+      text-shadow:
+      0 0 10px rgba(255,255,255,0.15),
+      0 0 30px rgba(255,255,255,0.08);
+    }
+
+    .intro-sub{
+      margin-top:20px;
+      font-size:clamp(1rem,2vw,1.3rem);
+      color:rgba(255,255,255,0.5);
+      font-style:italic;
+      opacity:0;
+      transform:translateY(20px);
+      transition:1s ease;
+    }
+
+    .intro-title.active,
+    .intro-sub.active{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .intro-title.button-mode{
+      padding:18px 40px;
+      border:1px solid rgba(255,255,255,0.15);
+      border-radius:999px;
+      background:rgba(255,255,255,0.03);
+      backdrop-filter:blur(10px);
+      cursor:pointer;
+      transition:0.4s ease;
+    }
+
+    .intro-title.button-mode:hover{
+      transform:scale(1.05);
+      background:rgba(255,255,255,0.07);
+      box-shadow:
+      0 0 30px rgba(255,255,255,0.08);
+    }
+
+    /* SECOND PAGE */
+    .hidden{
+      display:none;
+    }
+
+    .book-wrapper{
+      perspective:2000px;
+    }
+
+    .book{
+      position:relative;
+      width:380px;
+      height:540px;
+      transform-style:preserve-3d;
+      transition:1.2s ease;
+      cursor:pointer;
+    }
+
+    .book.open{
+      transform:rotateY(-160deg);
+    }
+
+    .cover,
+    .inside{
+      position:absolute;
+      inset:0;
+      border-radius:24px;
+      overflow:hidden;
+      backface-visibility:hidden;
+    }
+
+    /* COVER */
+    .cover{
+      background:
+      linear-gradient(145deg,#041b30,#111111);
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow:
+      0 20px 60px rgba(0,0,0,0.9),
+      inset 0 0 30px rgba(255,255,255,0.03);
+
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      text-align:center;
+      padding:40px;
+    }
+
+    .cover::before{
+      content:'';
+      position:absolute;
+      inset:15px;
+      border:1px solid rgba(255,255,255,0.05);
+      border-radius:18px;
+    }
+
+    .cover h1{
+      font-family:'Playfair Display', serif;
+      font-size:2.5rem;
+      margin-bottom:15px;
+      letter-spacing:2px;
+    }
+
+    .cover p{
+      color:rgba(255,255,255,0.45);
+      font-style:italic;
+    }
+
+    /* INSIDE */
+    .inside{
+      transform:rotateY(180deg);
+      background:
+      linear-gradient(145deg,#010335,#141414);
+      border:1px solid rgba(255,255,255,0.06);
+      box-shadow:
+      inset 0 0 40px rgba(255,255,255,0.02);
+
+      padding:45px;
+      overflow-y:auto;
+    }
+
+    .inside::-webkit-scrollbar{
+      width:5px;
+    }
+
+    .inside::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,0.1);
+      border-radius:20px;
+    }
+
+    .letter{
+      line-height:2;
+      font-size:1.2rem;
+      color:rgba(255,255,255,0.82);
+      font-weight:300;
+    }
+
+    .letter .highlight{
+      color:white;
+      font-weight:600;
+    }
+
+    /* AUDIO */
+    .music-btn{
+      position:fixed;
+      top:20px;
+      right:20px;
+      z-index:10;
+
+      border:none;
+      outline:none;
+
+      background:rgba(255,255,255,0.04);
+      color:white;
+
+      padding:14px 22px;
+      border-radius:999px;
+
+      backdrop-filter:blur(12px);
+      cursor:pointer;
+
+      border:1px solid rgba(255,255,255,0.08);
+
+      transition:0.3s ease;
+    }
+
+    .music-btn:hover{
+      background:rgba(255,255,255,0.08);
+    }
+
+    /* MOBILE */
+    @media(max-width:768px){
+
+      .book{
+        width:320px;
+        height:480px;
+      }
+
+      .inside{
+        padding:30px;
+      }
+
+      .letter{
+        font-size:1.05rem;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-noise"></div>
+
+  <div class="particles" id="particles"></div>
+
+  <!-- MUSIC -->
+  <button class="music-btn" onclick="toggleMusic()">
+    🎵 Music
+  </button>
+
+  <audio id="music" loop>
+    <source src="pianome.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- PAGE 1 -->
+  <section class="page" id="page1">
+
+    <h1 class="intro-title" id="title">
+      HALO ME STEFANNY
+    </h1>
+
+    <p class="intro-sub" id="subtitle">
+      ini ga seberapa, tapi aku harap kamu suka yaa :3
+    </p>
+
+  </section>
+
+  <!-- PAGE 2 -->
+  <section class="page hidden" id="page2">
+
+    <div class="book-wrapper">
+
+      <div class="book" id="book">
+
+        <!-- COVER -->
+        <div class="cover">
+          <h1><3</h1>
+          <p>coba di klik</p>
+        </div>
+
+        <!-- INSIDE -->
+        <div class="inside">
+
+          <div class="letter">
+
+            For ME, with love.
+            <br><br>
+
+            Anw me… kadang aku suka mikir ya, lucu banget ternyata hidup bisa berubah cuma karena satu orang datang dengan cara yang sederhana. Dari yang awalnya cuma chat biasa, ketemu biasa, bercanda biasa… sekarang malah jadi seseorang yang paling aku cari setiap hari.
+
+Ga kerasa banget dari tanggal 5 Mei sampai sekarang kita udah sejauh ini. Banyak banget hal kecil yang kalau diinget bikin aku senyum sendiri. Dari momen di elf sama anak anak gereja, dibecandain soal hari Senin yang katanya tanggal cantik buat jadian, sampai hal random kayak aku salah chat habis badminton tapi malah ujung ujungnya kamu yang jadi tempat aku pulang sekarang.
+Funny isn’t it?
+Hal hal kecil yang dulu keliatannya biasa aja ternyata pelan pelan jadi cerita yang paling aku suka.
+
+Dan aku suka cara Tuhan bikin semuanya ngalir pelan pelan. Ga buru buru, ga dipaksa, tapi akhirnya kita bisa sampai di titik ini. Titik dimana aku bisa bilang kalau aku nyaman banget sama kamu, me.
+Not just comfortable… but safe.
+Kayak setiap aku sama kamu, dunia tuh ga seberisik biasanya.
+
+Aku suka cara kamu hadir di hidup aku tanpa harus jadi sempurna. Cara kamu effort tanpa harus pamer. Cara kamu perhatian lewat hal hal kecil yang mungkin orang lain ga sadar. Cara kamu selalu coba dengerin aku walaupun kadang aku sendiri bingung sama isi kepala aku. Dan jujur me… itu berarti banget buat aku.
+
+You know?
+Aku tuh bukan orang yang gampang ngerasa “rumah” sama seseorang. Tapi sama kamu beda. Aku selalu ngerasa tenang. Makanya setiap kamu bilang “im home”, aku selalu jawab “hii homee” dengan perasaan yang bener bener tulus. Karena buat aku, rumah itu bukan tempat. Rumah itu perasaan. Dan anehnya… perasaan itu selalu ada setiap sama kamu.
+
+Aku juga sadar aku bukan pasangan yang sempurna. Aku masih overthinker, masih gampang kepikiran hal kecil, masih sering nyebelin, kadang annoying tanpa alasan, kadang terlalu banyak mikir sampai capek sendiri. Bahkan ada saat dimana aku bingung sama diri aku sendiri dan takut bikin kamu cape. Tapi kamu masih stay. Kamu masih sabar. Kamu masih milih buat ngerti aku pelan pelan. Dan itu salah satu alasan kenapa aku sayang banget sama kamu.
+
+Thank u for loving me in the softest way possible, me.
+
+Kadang aku juga takut kehilangan. Mungkin karena kita pernah ngerasain rasanya jauh, pernah lost contact, pernah sama sama diem. Dan jujur… aku ga suka rasa itu. Aku gamau lagi ngelewatin hari dimana aku harus pura pura biasa aja padahal sebenernya kangen banget sama kamu. Karena sekarang aku sadar, losing u once was enough for me.
+
+Aku suka semua tentang kita yang sederhana ini. Cara kita ngobrol random, cara kita saling ganggu, cara kita marahan kecil terus baikan lagi, cara kita saling nyari satu sama lain tanpa sadar. Bahkan cara kamu manggil aku aja kadang bisa bikin hari aku membaik.
+
+
+
+            <br><br>
+
+            <span class="highlight">
+              Kamu spesial.
+            </span>
+
+            <br><br>
+Dan satu hal yang selalu aku syukuri… Tuhan masih izinin kita buat ada di hidup masing masing sampai sekarang.
+I really believe God writes this story beautifully.
+Karena di waktu yang tepat, di keadaan yang ga pernah aku kira, Tuhan malah ngenalin aku ke seseorang yang ternyata bisa jadi sehangat ini buat aku.
+
+Aku masih sering doain kamu loh me.
+Doa yang isinya sederhana aja… semoga kamu sehat, semoga hati kamu tenang, semoga hari hari kamu selalu dijaga Tuhan, dan semoga kalau nanti dunia lagi berat buat kamu, kamu inget kalau masih ada aku yang selalu mau dengerin semuanya.
+
+Kalau nanti aku lebih banyak diam, lebih banyak mikir sendiri, atau keliatan berubah… please dont leave immediately. Kadang aku cuma lagi capek sama isi kepala aku sendiri. Tapi bukan berarti rasa aku ke kamu hilang. Karena selama ini, seberapa kesel atau seberapa capeknya aku, aku ga pernah bener bener berhenti sayang sama kamu.
+
+Dan aku harap, sejauh apapun nanti hubungan ini berjalan, kita tetep jadi dua orang yang selalu milih buat balik satu sama lain. Bukan karena semuanya selalu mudah, tapi karena kita sama sama tau kalau yang kita punya itu berharga.
+
+Thank u ya me…
+For every effort, every patience, every late night conversation, every “udah makan belum?”, every random update, every little reassurance, and every moment you choose me again and again.
+
+Happy anniversary Me 
+And welcome homeee
+I love u more than words could ever explain.
+More than yesterday, more than last month, maybe even more every single day.
+Maaf kalau apa yang aku kasih ga seberapa banget, tapi aku bilang sesuai janji bakal kasih kado wkwwk
+
+            <br><br>
+
+            — El
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <script>
+
+    const title = document.getElementById("title");
+    const subtitle = document.getElementById("subtitle");
+
+    const page1 = document.getElementById("page1");
+    const page2 = document.getElementById("page2");
+
+    const book = document.getElementById("book");
+
+    const music = document.getElementById("music");
+
+    let playing = false;
+
+    // SHOW ANIMATION
+    setTimeout(()=>{
+      title.classList.add("active");
+    },500);
+
+    setTimeout(()=>{
+      subtitle.classList.add("active");
+    },1200);
+
+    // TURN TO BUTTON
+    setTimeout(()=>{
+      title.classList.add("button-mode");
+
+      title.onclick = ()=>{
+        page1.classList.add("hidden");
+        page2.classList.remove("hidden");
+      };
+
+    },4000);
+
+    // BOOK OPEN
+    book.addEventListener("click", ()=>{
+      book.classList.toggle("open");
+    });
+
+    // MUSIC
+    function toggleMusic(){
+
+      if(playing){
+        music.pause();
+        playing = false;
+      }else{
+        music.play();
+        playing = true;
+      }
+
+    }
+
+    // PARTICLES
+    const particles = document.getElementById("particles");
+
+    function createParticle(){
+
+      const particle = document.createElement("div");
+
+      particle.classList.add("particle");
+
+      particle.style.left = Math.random() * 100 + "%";
+
+      particle.style.animationDuration =
+      (Math.random() * 5 + 5) + "s";
+
+      particle.style.opacity =
+      Math.random();
+
+      particles.appendChild(particle);
+
+      setTimeout(()=>{
+        particle.remove();
+      },10000);
+
+    }
+
+    setInterval(createParticle, 120);
+
+    // disable right click
+    document.addEventListener("contextmenu", e => e.preventDefault());
+
+  </script>
+
+</body>
+</html>
